@@ -1,0 +1,9 @@
+
+> @horloge/vite-plugin-archive-clean@0.0.2 build /Users/zhongmingyuan/workspace/self/sourceCode/fe-utils/packages/vite-plugin-archive-clean
+> tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json && npm run renameESM
+
+
+> @horloge/vite-plugin-archive-clean@0.0.2 renameESM /Users/zhongmingyuan/workspace/self/sourceCode/fe-utils/packages/vite-plugin-archive-clean
+> node -e "require('fs').rename('dist/esm/index.js', 'dist/esm/index.mjs', function(err) { if (err) console.log(err); console.log('Build successful!') })"
+
+Build successful!

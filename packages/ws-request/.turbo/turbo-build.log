@@ -1,0 +1,14 @@
+
+> @horloge/ws-request@0.0.1 build /Users/zhongmingyuan/workspace/self/sourceCode/fe-utils/packages/ws-request
+> vite build
+
+vite v3.2.5 building for production...
+transforming...
+✓ 1 modules transformed.
+rendering chunks...
+dist/types/index.d.ts   0.71 KiB
+dist/es/index.js        2.37 KiB / gzip: 0.81 KiB
+dist/es/index.js.map    5.06 KiB
+dist/types/index.d.ts   0.71 KiB
+dist/umd/index.js       2.04 KiB / gzip: 0.82 KiB
+dist/umd/index.js.map   4.75 KiB
