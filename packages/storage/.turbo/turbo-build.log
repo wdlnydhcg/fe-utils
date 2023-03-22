@@ -3,12 +3,3 @@
 > vite build
 
 vite v3.2.5 building for production...
-transforming...
-✓ 1 modules transformed.
-rendering chunks...
-dist/types/index.d.ts   0.77 KiB
-dist/es/index.js        2.39 KiB / gzip: 0.75 KiB
-dist/es/index.js.map    5.24 KiB
-dist/types/index.d.ts   0.77 KiB
-dist/umd/index.js       1.92 KiB / gzip: 0.76 KiB
-dist/umd/index.js.map   5.02 KiB

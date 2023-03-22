@@ -4,21 +4,21 @@ export interface Options {
      * Input Directory
      * @default `dist`
      */
-    inDir?: string;
+    filesDir?: string;
     /**
-     * Output Directory
-     * @default `dist-zip`
+     * Archive Name
+     * @default `dist.tar`
      */
-    outDir?: string;
+    archiveName?: string;
     /**
-     * Zip Archive Name
-     * @default `dist.zip`
+     * ArchiveType
+     * @default `tar`
      */
-    outFileName?: string;
+    archiveType?: "tar" | "zip" | "tgz";
     /**
-     * clean Directory
-     * @default `""`
+     * archive after clean Input Directory
+     * @default true
      */
-    cleanDir?: string | string[];
+    archiveAfterClean?: boolean;
 }
-export default function zipPack(options?: Options): PluginOption;
+export default function archive(options?: Options): PluginOption;

@@ -1,95 +1,71 @@
 import fs from "fs";
-import path from "path";
-import JSZip from "jszip";
+import { resolve, join, sep } from "path";
+import * as compressing from "compressing";
+import pc from "picocolors";
 const { existsSync, readdirSync, statSync, unlinkSync, rmdirSync } = fs;
-const { resolve, join } = path;
-export default function zipPack(options) {
-    const inDir = (options === null || options === void 0 ? void 0 : options.inDir) || "dist";
-    const outDir = (options === null || options === void 0 ? void 0 : options.outDir) || "dist-zip";
-    const outFileName = (options === null || options === void 0 ? void 0 : options.outFileName) || "dist.zip";
-    const cleanDir = (options === null || options === void 0 ? void 0 : options.cleanDir) || "";
-    function addFilesToZipArchive(zip, inDir) {
-        const listOfFiles = fs.readdirSync(inDir);
-        listOfFiles.forEach((fileName) => {
-            const filePath = path.join(inDir, fileName);
-            const file = fs.statSync(filePath);
-            if (file === null || file === void 0 ? void 0 : file.isDirectory()) {
-                const dir = zip.folder(fileName);
-                addFilesToZipArchive(dir, filePath);
-            }
-            else {
-                zip.file(fileName, fs.readFileSync(filePath));
-            }
-        });
-    }
-    function createZipArchive(zip) {
-        zip
-            .generateAsync({
-            type: "nodebuffer",
-            compression: "DEFLATE",
-            compressionOptions: {
-                level: 9,
-            },
-        })
-            .then((file) => {
-            const fileName = path.join(outDir, outFileName);
-            if (fs.existsSync(fileName)) {
-                fs.unlinkSync(fileName);
-            }
-            fs.writeFileSync(fileName, file);
-        });
-    }
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+export default function archive(options) {
+    const filesDir = resolve(process.cwd(), (options === null || options === void 0 ? void 0 : options.filesDir) || "dist");
+    const outDir = resolve(process.cwd(), filesDir, "../");
+    const archiveName = (options === null || options === void 0 ? void 0 : options.archiveName) || filesDir.split(sep)[filesDir.split(sep).length - 1];
+    const archiveType = (options === null || options === void 0 ? void 0 : options.archiveType) || "tar";
+    const isClean = (options === null || options === void 0 ? void 0 : options.archiveAfterClean) || true;
     function cleanFiles(dirPath) {
+        var files = [];
         if (existsSync(dirPath)) {
-            let files = readdirSync(dirPath);
+            files = readdirSync(dirPath);
             files.forEach(file => {
                 let path = join(dirPath, file);
                 if (statSync(path).isDirectory()) {
                     cleanFiles(path);
-                    rmdirSync(path);
                 }
                 else {
-                    if (file === outFileName)
+                    if (file === archiveName)
                         return;
                     unlinkSync(path);
                 }
             });
+            rmdirSync(dirPath);
+        }
+    }
+    function handleTar() {
+        console.log(pc.blue(`🗽 archive folder ${filesDir} `));
+        if (fs.existsSync(filesDir)) {
+            if (!fs.existsSync(outDir)) {
+                fs.mkdirSync(outDir);
+            }
+            compressing.tar.compressDir(filesDir, join(outDir, `${archiveName}.${archiveType}`))
+                .then(() => {
+                console.log(pc.green(`🎉 archive done~!  `) + "" + pc.green(`${join(outDir, `${archiveName}.${archiveType}`)}`));
+                if (isClean) {
+                    cleanFiles(filesDir);
+                }
+            })
+                .catch((err) => {
+                console.log(pc.red(`🌞 ${err} `));
+            });
+        }
+        else {
+            console.log(pc.red(` "${filesDir}" folder directory not found! `));
         }
     }
     return {
         name: "vite-plugin-archive-clean",
-        apply: "build",
-        closeBundle() {
+        enforce: "post",
+        apply: 'build',
+        writeBundle() {
+            console.log("archiveType  1", archiveType);
             try {
-                console.log("\x1b[36m%s\x1b[0m", `Zip packing - "${inDir}" folder :`);
-                if (fs.existsSync(inDir)) {
-                    if (!fs.existsSync(outDir)) {
-                        fs.mkdirSync(outDir);
-                    }
-                    const zip = new JSZip();
-                    console.log("\x1b[32m%s\x1b[0m", "  - Preparing files.");
-                    addFilesToZipArchive(zip, inDir);
-                    console.log("\x1b[32m%s\x1b[0m", "  - Creating zip archive.");
-                    createZipArchive(zip);
-                    if (typeof cleanDir === "string" ? !!cleanDir : !!cleanDir.length) {
-                        console.log("\x1b[32m%s\x1b[0m", "  - Clean Dir.");
-                        if (Array.isArray(cleanDir)) {
-                            for (let i = 0, len = cleanDir.length; i < len; i++) {
-                                cleanFiles(resolve(process.cwd(), cleanDir[i]));
-                            }
-                        }
-                        else {
-                            cleanFiles(resolve(process.cwd(), cleanDir));
-                        }
-                    }
-                    console.log("\x1b[32m%s\x1b[0m", "  - Done.");
+                console.log("archiveType 2 ", archiveType);
+                if (archiveType === 'zip') {
+                    // handleZip();
                 }
-                else {
-                    console.log("\x1b[31m%s\x1b[0m", `  - "${inDir}" folder does not exist!`);
+                else if (archiveType === 'tar') {
+                    handleTar();
                 }
             }
             catch (error) {
-                console.log("\x1b[31m%s\x1b[0m", "  - Something went wrong while building zip file!");
+                console.log(`🐻‍❄️ ${error}`);
             }
         },
     };

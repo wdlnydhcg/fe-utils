@@ -2,7 +2,7 @@
  * @Author: MrAlenZhong
  * @Date: 2023-03-21 19:38:46
  * @LastEditors: MrAlenZhong
- * @LastEditTime: 2023-03-21 20:18:08
+ * @LastEditTime: 2023-03-22 16:38:58
  * @Description: @horloge/vite-plugin-archive-clean
 -->
 # @horloge/vite-plugin-archive-clean
@@ -22,10 +22,15 @@ npm i -D @horloge/vite-plugin-archive-clean
 // vite.config.js
 
 import { defineConfig } from "vite";
-import zipPack from "@horloge/vite-plugin-archive-clean";
+import archive from "@horloge/vite-plugin-archive-clean";
 
 export default defineConfig({
-  plugins: [zipPack()],
+  plugins: [archive({
+    filesDir: './dist',   //
+    archiveName: 'dist',  // dist.tar
+    archiveType: 'tar',   // tar
+    archiveAfterClean: true // archive after clean input directory
+  })],
 });
 ```
 
@@ -33,21 +38,26 @@ export default defineConfig({
 
 ```ts
 export interface Options {
-  /**
+ /**
    * Input Directory
    * @default `dist`
    */
-  inDir?: string;
+  filesDir?: string;
   /**
-   * Output Directory
-   * @default `dist-zip`
+   * Archive Name
+   * @default `dist.tar`
    */
-  outDir?: string;
+  archiveName?: string;
   /**
-   * Zip Archive Name
-   * @default `dist.zip`
+   * ArchiveType
+   * @default `tar`
    */
-  outFileName?: string;
+  archiveType?: "tar" | "zip" | "tgz";
+  /**
+   * archive after clean Input Directory
+   * @default true
+   */
+  archiveAfterClean?: boolean;
 }
 ```
 ## License
