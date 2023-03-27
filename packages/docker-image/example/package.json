@@ -1,0 +1,16 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "docker:build-test": "docker-image build --arg=test",
+    "docker:build-prod": "docker-image build --arg=prod",
+    "docker:build-test-save": "docker-image save --arg=test",
+    "docker:build-prod-save": "docker-image save --arg=prod",
+    "docker:push": "docker-image push --arg=test"
+  },
+  "author": "",
+  "license": "ISC",
+  "@horloge/docker-image": "file:../docker-image"
+}

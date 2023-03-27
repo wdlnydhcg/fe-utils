@@ -1,0 +1,23 @@
+{
+  "name": "@horloge/docker-image",
+  "version": "0.0.1",
+  "description": "",
+  "bin": {
+    "docker-image": "./bin/docker-image"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cosmiconfig": "^8.1.3",
+    "execa": "^5.1.1",
+    "picocolors": "^1.0.0",
+    "pkg-up": "^3.1.0",
+    "yargs": "^17.7.1"
+  },
+  "devDependencies": {
+    "dayjs": "^1.11.7"
+  }
+}
